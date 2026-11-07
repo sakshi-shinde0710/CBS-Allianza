@@ -182,3 +182,15 @@
     border-right-color: var(--border);
   }
 }
+.nexora-title {
+  color: #d92332;
+  font-size: 34px;
+  font-weight: 800;
+}
+
+.page-title {
+  color: #17365d;
+  font-size: 27px;
+  font-weight: 700;
+  text-align: center;
+}
