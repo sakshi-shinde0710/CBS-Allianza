@@ -17,8 +17,11 @@ export const isValidCkyc = (value) => /^\d{14}$/.test(value)
 
 export const calculateAge = (birthDate, today = new Date()) => {
   if (!birthDate) return ''
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(birthDate)) return ''
   const date = new Date(`${birthDate}T00:00:00`)
   if (Number.isNaN(date.getTime())) return ''
+  const [year, month, day] = birthDate.split('-').map(Number)
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return ''
   let age = today.getFullYear() - date.getFullYear()
   const monthDifference = today.getMonth() - date.getMonth()
   if (
@@ -30,13 +33,29 @@ export const calculateAge = (birthDate, today = new Date()) => {
   return age >= 0 ? age : ''
 }
 
-const isValidDate = (value) =>
-  !value || !Number.isNaN(new Date(`${value}T00:00:00`).getTime())
+const isValidDate = (value) => {
+  if (!value) return true
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
+  const [year, month, day] = value.split('-').map(Number)
+  const date = new Date(year, month - 1, day)
+  return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day
+}
 
 const isAfter = (later, earlier) =>
   !later || !earlier || new Date(`${later}T00:00:00`) > new Date(`${earlier}T00:00:00`)
 
-export function validatePage(pageIndex, values, facilities = []) {
+const isValidName = (value) => /^[\p{L}\p{M}][\p{L}\p{M} .'-]*$/u.test(value.trim())
+
+const nameFields = [
+  'kycFirstName', 'kycMiddleName', 'kycLastName',
+  'aliasFirstName', 'aliasMiddleName', 'aliasLastName',
+  'fatherFirstName', 'fatherMiddleName', 'fatherLastName',
+  'motherFirstName', 'motherMiddleName', 'motherLastName',
+  'spouseFirstName', 'spouseMiddleName', 'spouseLastName',
+  'placeOfBirth',
+]
+
+export function validatePage(pageIndex, values, facilities = [], addresses = []) {
   const errors = {}
   const required = (key, label) => {
     if (!String(values[key] ?? '').trim()) errors[key] = `${label} is required.`
@@ -62,17 +81,26 @@ export function validatePage(pageIndex, values, facilities = []) {
   }
 
   if (pageIndex === 0) {
-    required('customerName', 'Customer name')
+    required('customerNo', 'Customer No')
+    required('homeBranch', 'Home Branch')
+    if (![values.kycFirstName, values.kycMiddleName, values.kycLastName].some((value) => value?.trim())) {
+      errors.kycName = 'KYC Name is required.'
+    }
     required('dateOfBirth', 'Date of birth')
     required('gender', 'Gender')
-    required('mobile', 'Mobile number')
     date('dateOfBirth', 'Date of birth', true)
+    date('minorTurnedMajorOn', 'Minor turned Major date', true)
+    date('form121SubmissionDate', 'Form 121 submission date', true)
+    if (
+      values.minorTurnedMajorOn &&
+      values.dateOfBirth &&
+      new Date(`${values.minorTurnedMajorOn}T00:00:00`) <= new Date(`${values.dateOfBirth}T00:00:00`)
+    ) {
+      errors.minorTurnedMajorOn = 'This date must be later than date of birth.'
+    }
     validate('pan', isValidPan, 'Enter a valid PAN (for example, ABCDE1234F).')
     validate('aadhaar', isValidAadhaar, 'Aadhaar must contain exactly 12 digits.')
-    validate('mobile', isValidMobile, 'Enter a valid 10-digit Indian mobile number.')
-    validate('alternateMobile', isValidMobile, 'Enter a valid 10-digit Indian mobile number.')
-    validate('email', isValidEmail, 'Enter a valid email address.')
-    validate('passportIssueDate', isValidDate, 'Enter a valid passport issue date.')
+    date('passportIssueDate', 'Issue date')
     date('passportExpiryDate', 'Passport expiry date')
     if (
       values.passportIssueDate &&
@@ -84,10 +112,31 @@ export function validatePage(pageIndex, values, facilities = []) {
     if (values.passportIssueDate && values.dateOfBirth && !isAfter(values.passportIssueDate, values.dateOfBirth)) {
       errors.passportIssueDate = 'Issue date must be later than date of birth.'
     }
+    if (values.noOfChildren && !/^\d+$/.test(values.noOfChildren)) {
+      errors.noOfChildren = 'No of Children must contain digits only.'
+    }
+    if (values.dependents && !/^\d+$/.test(values.dependents)) {
+      errors.dependents = 'No of Dependents must contain digits only.'
+    }
+    nameFields.forEach((key) => {
+      if (values[key] && !isValidName(values[key])) {
+        const group = key.startsWith('kyc') ? 'kycName'
+          : key.startsWith('alias') ? 'aliasName'
+            : key.startsWith('father') ? 'fatherName'
+              : key.startsWith('mother') ? 'motherName'
+                : 'spouseName'
+        errors[group] = 'Use letters, spaces, apostrophes, hyphens, or periods only.'
+      }
+    })
   }
 
   if (pageIndex === 1) {
-    required('kycName', 'KYC name')
+    if (![values.kycFirstName, values.kycMiddleName, values.kycLastName].some((value) => value?.trim())) {
+      errors.kycName = 'KYC Name is required.'
+    } else if ([values.kycFirstName, values.kycMiddleName, values.kycLastName]
+      .some((value) => value && !isValidName(value))) {
+      errors.kycName = 'Use letters, spaces, apostrophes, hyphens, or periods only.'
+    }
     required('customerOpenDate', 'Customer open date')
     required('kycDate', 'KYC date')
     required('nextKycReviewDate', 'Next KYC review date')
@@ -121,7 +170,9 @@ export function validatePage(pageIndex, values, facilities = []) {
 
   if (pageIndex === 2) {
     facilities.forEach((facility) => {
-      if (facility.amount && (!/^\d+(\.\d{1,2})?$/.test(facility.amount) || Number(facility.amount) < 0)) {
+      if (!facility.name?.trim()) {
+        errors[`facility-${facility.id}`] = 'Particulars are required.'
+      } else if (facility.amount && (!/^\d+(\.\d{1,2})?$/.test(facility.amount) || Number(facility.amount) < 0)) {
         errors[`facility-${facility.id}`] = 'Amount must be a non-negative number.'
       }
     })
@@ -131,6 +182,11 @@ export function validatePage(pageIndex, values, facilities = []) {
     validate('addressMobile', isValidMobile, 'Enter a valid 10-digit Indian mobile number.')
     validate('addressEmail', isValidEmail, 'Enter a valid email address.')
     validate('pinCode', isValidPin, 'PIN code must contain exactly 6 digits.')
+    addresses.forEach((address) => {
+      if (address.pinCode && !isValidPin(address.pinCode)) {
+        errors[`address-${address.id}-pinCode`] = 'PIN code must contain exactly 6 digits.'
+      }
+    })
   }
 
   if (pageIndex === 4) {
