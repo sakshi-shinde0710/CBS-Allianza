@@ -8,196 +8,169 @@ const tabs = [
   'Facilities',
   'Address',
   'Employment Details',
-  'Income Details',
+  'Networth',
   'Fatca Details',
   'Documents Upload',
 ]
 
+const kycNameField = {
+  name: 'kycName',
+  label: 'KYC Name',
+  parts: ['kycTitle', 'kycFirstName', 'kycMiddleName', 'kycLastName'],
+  titleOptions: true,
+}
+
+const customerOpenDateField = {
+  name: 'customerOpenDate',
+  label: 'Customer Open Date',
+  type: 'date',
+}
+
+const contextFields = [kycNameField, customerOpenDateField]
+
+const basicFields = [
+  { name: 'customerNo', label: 'Customer No', type: 'digits' },
+  { name: 'homeBranch', label: 'Home Branch' },
+  { name: 'groupCustomerNo', label: 'Group Customer No', type: 'digits' },
+  kycNameField,
+  { name: 'aliasName', label: 'Alias Name' },
+  { name: 'dateOfBirth', label: 'DOB', type: 'date' },
+  { name: 'age', label: 'Age', type: 'readonly' },
+  { name: 'placeOfBirth', label: 'Place of Birth' },
+  { name: 'pan', label: 'PAN Card', maxLength: 10, action: 'Validate' },
+  { name: 'aadhaar', label: 'Aadhar Card', type: 'digits', maxLength: 12, action: 'Validate' },
+  { name: 'customerType', label: 'Customer Type', type: 'select', options: ['Individual', 'Sole Proprietor'] },
+  { name: 'gender', label: 'Gender', type: 'select', options: ['Male', 'Female', 'Other'] },
+  { name: 'maritalStatus', label: 'Marital Status', type: 'select', options: ['Single', 'Married', 'Widowed', 'Divorced'] },
+  { name: 'physicalStatus', label: 'Physical Status', type: 'select', options: ['Normal', 'Visually Impaired', 'Hearing Impaired', 'Other'] },
+  { name: 'religion', label: 'Religion', type: 'select', options: ['Hindu', 'Muslim', 'Christian', 'Sikh', 'Buddhist', 'Jain', 'Other'] },
+  { name: 'caste', label: 'Caste' },
+  { name: 'scCategory', label: 'SC Category', type: 'select', options: ['Yes', 'No'] },
+  { name: 'minorIndicator', label: 'Minor Indicator', type: 'select', options: ['Yes', 'No'] },
+  { name: 'fatherName', label: 'Father’s Name', parts: ['fatherTitle', 'fatherFirstName', 'fatherMiddleName', 'fatherLastName'], titleOptions: true },
+  { name: 'motherName', label: 'Mother’s Name', parts: ['motherTitle', 'motherFirstName', 'motherMiddleName', 'motherLastName'], titleOptions: true },
+  { name: 'minorTurnedMajorOn', label: 'Minor turned Major on', type: 'date' },
+  { name: 'resident', label: 'Resident', type: 'select', options: ['Yes', 'No'] },
+  { name: 'residentialStatus', label: 'Residential Status', type: 'select', options: ['Resident Individual', 'Non-Resident Indian', 'Foreign National'] },
+  { name: 'passportNo', label: 'Passport No' },
+  { name: 'passportIssueDate', label: 'Issue Date', type: 'date' },
+  { name: 'passportExpiryDate', label: 'Expiry Date', type: 'date' },
+  { name: 'seniorCitizen', label: 'Sr. Citizen', type: 'select', options: ['Yes', 'No'] },
+  { name: 'staffIndicator', label: 'Staff Indicator', type: 'select', options: ['Yes', 'No'] },
+  { name: 'employeeId', label: 'Employee ID' },
+  { name: 'noOfChildren', label: 'No of Children', type: 'digits' },
+  { name: 'spouseName', label: 'Spouse Name', parts: ['spouseTitle', 'spouseFirstName', 'spouseMiddleName', 'spouseLastName'], titleOptions: true },
+  { name: 'dependents', label: 'No of Dependents', type: 'digits' },
+  { name: 'educationQualification', label: 'Education Qualification', type: 'select', options: ['Primary', 'Secondary', 'Graduate', 'Post Graduate', 'Other'] },
+  { name: 'nationality', label: 'Nationality', type: 'select', options: ['Indian', 'Other'] },
+  { name: 'customerStatus', label: 'Customer Status', type: 'select', options: ['Active', 'Inactive', 'Prospect'] },
+  { name: 'tdsFlag', label: 'TDS Flag', type: 'select', options: ['Yes', 'No'] },
+  { name: 'form121SubmissionDate', label: 'Form 121 Submission Date', type: 'date' },
+]
+
+const basicRows = [
+  ['customerNo', 'homeBranch', 'groupCustomerNo'],
+  ['kycName', 'basicActions', 'pan'],
+  ['aliasName', null, 'aadhaar'],
+  ['dateOfBirth', 'age', 'placeOfBirth'],
+  ['fatherName', 'motherName', 'gender'],
+  ['customerType', 'maritalStatus', 'physicalStatus'],
+  ['religion', 'scCategory', 'caste'],
+  ['passportNo', 'passportIssueDate', 'passportExpiryDate'],
+  ['seniorCitizen', 'staffIndicator', 'employeeId'],
+  ['spouseName', 'minorIndicator', 'minorTurnedMajorOn'],
+  ['noOfChildren', 'dependents', 'resident'],
+  ['residentialStatus', 'customerStatus', 'nationality'],
+  ['educationQualification', 'tdsFlag', 'form121SubmissionDate'],
+]
+
+const kycFields = [
+  { name: 'kycRating', label: 'KYC Rating', type: 'select', options: ['Low', 'Medium', 'High'] },
+  { name: 'pepIndicator', label: 'PEP Indicator', type: 'select', options: ['No', 'Yes', 'Related to PEP'] },
+  { name: 'amlRating', label: 'AML Rating', type: 'select', options: ['Low', 'Medium', 'High'] },
+  { name: 'ckycStatus', label: 'CKYC Status', type: 'select', options: ['Not Registered', 'Registered', 'Pending'] },
+  { name: 'ckycNo', label: 'CKYC No', type: 'digits', maxLength: 14 },
+  { name: 'kycDate', label: 'KYC Date', type: 'date' },
+  { name: 'nextKycReviewDate', label: 'Next KYC Review Date', type: 'date' },
+  { name: 'riskProfileExpiryDate', label: 'Risk Profile Expiry Date', type: 'date' },
+  { name: 'kycCompliant', label: 'KYC Compliant Indicator', type: 'select', options: ['Yes', 'No'] },
+]
+
+const facilityContext = contextFields
+
+const addressFields = [
+  { name: 'addressType', label: 'Address Type', type: 'select', options: ['Residential', 'Permanent', 'Communication', 'Office'] },
+  { name: 'addressValidFrom', label: 'Address Valid from', type: 'date' },
+  { name: 'addressNoOfYears', label: 'No of yrs', type: 'digits' },
+  { name: 'flatHouseNo', label: 'Flat / House No' },
+  { name: 'roadStreetName', label: 'Road / Street Name' },
+  { name: 'landmark', label: 'Landmark' },
+  { name: 'town', label: 'Town' },
+  { name: 'city', label: 'City' },
+  { name: 'state', label: 'State' },
+  { name: 'pinCode', label: 'PinCode', type: 'digits', maxLength: 6, inputMode: 'numeric' },
+  { name: 'country', label: 'Country', type: 'select', options: ['India', 'Other'] },
+]
+
+const phoneFields = [
+  { name: 'registeredMobile', label: 'Registered Mobile', type: 'digits', maxLength: 10, inputMode: 'numeric' },
+  { name: 'alternateMobile', label: 'Alternate Mobile', type: 'digits', maxLength: 10, inputMode: 'numeric' },
+  { name: 'personalMailId', label: 'Personal Mail ID', type: 'email' },
+]
+
+const employmentFields = [
+  { name: 'occupation', label: 'Occupation' },
+  { name: 'designation', label: 'Designation' },
+  { name: 'workExperience', label: 'No of years of service', type: 'number', min: 0, step: '0.1' },
+  { name: 'employerName', label: 'Name of the Employer' },
+  { name: 'employerLocation', label: 'Location' },
+  { name: 'employeeCode', label: 'Employee Code' },
+  { name: 'natureOfBusiness', label: 'Nature of Business' },
+  { name: 'entityRegistered', label: 'Entity Registered', type: 'select', options: ['Yes', 'No'] },
+  { name: 'companyMailId', label: 'Company Mail ID', type: 'email' },
+]
+
+const networthFields = [
+  { name: 'networthDesignation', label: 'Designation' },
+  { name: 'grossIncome', label: 'Gross Income', type: 'number', min: 0, step: '0.01' },
+  { name: 'netIncome', label: 'Net Income', type: 'number', min: 0, step: '0.01' },
+  { name: 'sourceOfIncome', label: 'Source of Income' },
+  { name: 'additionalIncome', label: 'Additional Income', type: 'number', min: 0, step: '0.01' },
+  { name: 'totalIncome', label: 'Total Income', type: 'number', min: 0, step: '0.01' },
+  { name: 'networthRs', label: 'Networth Rs.', type: 'number', min: 0, step: '0.01' },
+  { name: 'totalOutgoings', label: 'Total Outgoings', type: 'number', min: 0, step: '0.01' },
+]
+
+const fatcaFields = [
+  { name: 'countryOfBirth', label: 'Country of Birth', type: 'select', options: ['India', 'Other'] },
+  { name: 'placeOfBirthFatca', label: 'Place of Birth' },
+  { name: 'fatcaNationality', label: 'Nationality', type: 'select', options: ['Indian', 'Other'] },
+  { name: 'cityOfBirth', label: 'City of Birth' },
+  { name: 'citizenship', label: 'Citizenship' },
+  { name: 'countryOfResidence', label: 'Country of Residence', type: 'select', options: ['India', 'Other'] },
+]
+
 const fieldGroups = [
-  [
-    {
-      title: 'Customer and Branch Details',
-      fields: [
-        { name: 'customerNo', label: 'Customer No', type: 'digits', required: true },
-        { name: 'homeBranch', label: 'Home Branch', required: true },
-        { name: 'groupCustomerNo', label: 'Group Customer No', type: 'digits' },
-      ],
-    },
-    {
-      title: 'Personal Details',
-      layout: 'personal',
-      rows: [
-        { left: 'kycName', actions: true },
-        { left: 'dateOfBirth', middle: 'age', right: 'placeOfBirth' },
-        { left: 'fatherName', middle: 'motherName' },
-        { left: 'gender', middle: 'maritalStatus' },
-        { left: 'aliasName', middle: 'spouseName' },
-      ],
-      fields: [
-        { name: 'kycName', label: 'KYC Name', parts: ['kycTitle', 'kycFirstName', 'kycMiddleName', 'kycLastName'], titleOptions: true, required: true },
-        { name: 'aliasName', label: 'Alias Name', parts: ['aliasFirstName', 'aliasMiddleName', 'aliasLastName'] },
-        { name: 'dateOfBirth', label: 'DOB', type: 'date', required: true },
-        { name: 'age', label: 'Age', type: 'readonly' },
-        { name: 'placeOfBirth', label: 'Place of Birth', nameField: true },
-        { name: 'fatherName', label: "Father's Name", parts: ['fatherTitle', 'fatherFirstName', 'fatherMiddleName', 'fatherLastName'], titleOptions: true },
-        { name: 'motherName', label: "Mother's Name", parts: ['motherTitle', 'motherFirstName', 'motherMiddleName', 'motherLastName'], titleOptions: true },
-        { name: 'gender', label: 'Gender', type: 'select', options: ['Male', 'Female', 'Other'], required: true },
-        { name: 'maritalStatus', label: 'Marital Status', type: 'select', options: ['Single', 'Married', 'Widowed', 'Divorced'] },
-        { name: 'spouseName', label: 'Spouse Name', parts: ['spouseTitle', 'spouseFirstName', 'spouseMiddleName', 'spouseLastName'], titleOptions: true },
-      ],
-    },
-    {
-      title: 'Customer Information',
-      fields: [
-        { name: 'customerType', label: 'Customer Type', type: 'select', options: ['Individual', 'Sole Proprietor'] },
-        { name: 'physicalStatus', label: 'Physical Status', type: 'select', options: ['Normal', 'Visually Impaired', 'Hearing Impaired', 'Other'] },
-        { name: 'religion', label: 'Religion', type: 'select', options: ['Hindu', 'Muslim', 'Christian', 'Sikh', 'Buddhist', 'Jain', 'Other'] },
-        { name: 'caste', label: 'Caste' },
-        { name: 'scCategory', label: 'SC Category', type: 'select', options: ['Yes', 'No'] },
-        { name: 'seniorCitizen', label: 'Sr. Citizen', type: 'select', options: ['Yes', 'No'] },
-        { name: 'minorIndicator', label: 'Minor Indicator', type: 'select', options: ['Yes', 'No'] },
-        { name: 'minorTurnedMajorOn', label: 'Minor turned Major on', type: 'date' },
-        { name: 'noOfChildren', label: 'No of Children', type: 'digits' },
-        { name: 'dependents', label: 'No of Dependents', type: 'digits' },
-      ],
-    },
-    {
-      title: 'Identity Details',
-      fields: [
-        { name: 'pan', label: 'PAN Card', maxLength: 10, action: 'Validate' },
-        { name: 'aadhaar', label: 'Aadhaar Card', type: 'digits', maxLength: 12, inputMode: 'numeric', action: 'Validate' },
-        { name: 'passportNo', label: 'Passport No' },
-        { name: 'passportIssueDate', label: 'Issue Date', type: 'date' },
-        { name: 'passportExpiryDate', label: 'Expiry Date', type: 'date' },
-      ],
-    },
-    {
-      title: 'Employment and Other Details',
-      fields: [
-        { name: 'staffIndicator', label: 'Staff Indicator', type: 'select', options: ['Yes', 'No'] },
-        { name: 'employeeId', label: 'Employee ID' },
-        { name: 'resident', label: 'Resident', type: 'select', options: ['Yes', 'No'] },
-        { name: 'residentialStatus', label: 'Residential Status', type: 'select', options: ['Resident Individual', 'Non-Resident Indian', 'Foreign National'] },
-        { name: 'customerStatus', label: 'Customer Status', type: 'select', options: ['Active', 'Inactive', 'Prospect'] },
-        { name: 'nationality', label: 'Nationality', type: 'select', options: ['Indian', 'Other'] },
-        { name: 'educationQualification', label: 'Education Qualification', type: 'select', options: ['Primary', 'Secondary', 'Graduate', 'Post Graduate', 'Other'] },
-        { name: 'tdsFlag', label: 'TDS Flag', type: 'select', options: ['Yes', 'No'] },
-        { name: 'form121SubmissionDate', label: 'Form 121 Submission Date', type: 'date' },
-      ],
-    },
-  ],
-  [
-    {
-      title: 'KYC Risk Details',
-      fields: [
-        { name: 'kycName', label: 'KYC Name', parts: ['kycTitle', 'kycFirstName', 'kycMiddleName', 'kycLastName'], titleOptions: true, required: true },
-        { name: 'kycRating', label: 'KYC Rating', type: 'select', options: ['Low', 'Medium', 'High'] },
-        { name: 'pepIndicator', label: 'PEP Indicator', type: 'select', options: ['No', 'Yes', 'Related to PEP'] },
-        { name: 'amlRating', label: 'AML Rating', type: 'select', options: ['Low', 'Medium', 'High'] },
-        { name: 'ckycStatus', label: 'CKYC Status', type: 'select', options: ['Not Registered', 'Registered', 'Pending'] },
-      ],
-    },
-    {
-      title: 'KYC Dates and Compliance',
-      fields: [
-        { name: 'customerOpenDate', label: 'Customer Open Date', type: 'date', required: true },
-        { name: 'ckycNo', label: 'CKYC No', type: 'digits', maxLength: 14 },
-        { name: 'kycDate', label: 'KYC Date', type: 'date', required: true },
-        { name: 'nextKycReviewDate', label: 'Next KYC Review Date', type: 'date', required: true },
-        { name: 'riskProfileExpiryDate', label: 'Risk Profile Expiry Date', type: 'date' },
-        { name: 'kycCompliant', label: 'KYC Compliant Indicator', type: 'select', options: ['Yes', 'No'] },
-      ],
-    },
-  ],
-  [],
-  [
-    {
-      title: 'Address Information',
-      fields: [
-        { name: 'addressType', label: 'Address Type', type: 'select', options: ['Residential', 'Permanent', 'Communication', 'Office'] },
-        { name: 'addressLine1', label: 'Address Line 1' },
-        { name: 'addressLine2', label: 'Address Line 2' },
-        { name: 'addressLine3', label: 'Address Line 3' },
-        { name: 'country', label: 'Country', type: 'select', options: ['India', 'Other'] },
-        { name: 'state', label: 'State' },
-        { name: 'district', label: 'District' },
-        { name: 'city', label: 'City' },
-        { name: 'pinCode', label: 'PIN Code', type: 'digits', maxLength: 6, inputMode: 'numeric' },
-        { name: 'addressMobile', label: 'Mobile Number', type: 'digits', maxLength: 10, inputMode: 'numeric' },
-        { name: 'addressEmail', label: 'Email Address', type: 'email' },
-        { name: 'addressProofType', label: 'Address Proof Type', type: 'select', options: ['Aadhaar', 'Passport', 'Utility Bill', 'Driving Licence', 'Other'] },
-        { name: 'addressProofNumber', label: 'Address Proof Number' },
-      ],
-    },
-  ],
-  [
-    {
-      title: 'Employment Information',
-      fields: [
-        { name: 'employmentType', label: 'Employment Type', type: 'select', options: ['Salaried', 'Self-employed', 'Business', 'Retired', 'Student', 'Other'] },
-        { name: 'occupation', label: 'Occupation' },
-        { name: 'employerName', label: 'Employer Name' },
-        { name: 'designation', label: 'Designation' },
-        { name: 'department', label: 'Department' },
-        { name: 'workExperience', label: 'Total Work Experience' },
-        { name: 'joiningDate', label: 'Joining Date', type: 'date' },
-        { name: 'officeAddress', label: 'Office Address', wide: true },
-        { name: 'officeCity', label: 'Office City' },
-        { name: 'officeState', label: 'Office State' },
-        { name: 'officePinCode', label: 'Office PIN Code', type: 'digits', maxLength: 6, inputMode: 'numeric' },
-        { name: 'employerContact', label: 'Employer Contact Details', type: 'digits', maxLength: 10, inputMode: 'numeric' },
-      ],
-    },
-  ],
-  [
-    {
-      title: 'Income & Banking Information',
-      fields: [
-        { name: 'incomeType', label: 'Income Type', type: 'select', options: ['Salary', 'Business', 'Professional', 'Pension', 'Other'] },
-        { name: 'monthlyIncome', label: 'Monthly Income', type: 'number', min: 0, step: '0.01' },
-        { name: 'annualIncome', label: 'Annual Income', type: 'number', min: 0, step: '0.01' },
-        { name: 'otherIncome', label: 'Other Income', type: 'number', min: 0, step: '0.01' },
-        { name: 'salaryMode', label: 'Salary Mode', type: 'select', options: ['Bank Transfer', 'Cheque', 'Cash', 'Other'] },
-        { name: 'incomeSource', label: 'Income Source' },
-        { name: 'bankName', label: 'Bank Name' },
-        { name: 'accountNumber', label: 'Account Number', type: 'digits', inputMode: 'numeric' },
-        { name: 'incomeIfsc', label: 'IFSC Code', maxLength: 11 },
-        { name: 'incomeProofType', label: 'Income Proof Type', type: 'select', options: ['Salary Slip', 'Form 16', 'IT Return', 'Bank Statement', 'Other'] },
-      ],
-    },
-  ],
-  [
-    {
-      title: 'Tax Residency & Declarations',
-      fields: [
-        { name: 'taxResidency', label: 'Tax Residency', type: 'select', options: ['India only', 'India and other country', 'Other country'] },
-        { name: 'countryOfBirth', label: 'Country of Birth', type: 'select', options: ['India', 'Other'] },
-        { name: 'fatcaNationality', label: 'Nationality', type: 'select', options: ['Indian', 'Other'] },
-        { name: 'tin', label: 'Tax Identification Number (TIN)' },
-        { name: 'usPerson', label: 'US Person Indicator', type: 'select', options: ['No', 'Yes'] },
-        { name: 'fatcaDeclarationDate', label: 'FATCA Declaration Date', type: 'date' },
-        { name: 'crsDeclarationDate', label: 'CRS Declaration Date', type: 'date' },
-        { name: 'fatcaApplicable', label: 'FATCA Applicable', type: 'select', options: ['No', 'Yes'] },
-        { name: 'crsApplicable', label: 'CRS Applicable', type: 'select', options: ['No', 'Yes'] },
-      ],
-    },
-  ],
-  [],
+  [{ fields: basicFields }],
+  [{ fields: [...contextFields, ...kycFields] }],
+  [{ fields: facilityContext }],
+  [{ fields: [...contextFields, ...addressFields, ...phoneFields] }],
+  [{ fields: [...contextFields, ...employmentFields] }],
+  [{ fields: [...contextFields, ...networthFields] }],
+  [{ fields: [...contextFields, ...fatcaFields] }],
+  [{ fields: contextFields }],
 ]
 
-const documentTypes = [
-  'PAN',
-  'Aadhaar',
-  'Passport',
-  'Photograph',
-  'Signature',
-  'Address Proof',
-  'Identity Proof',
-  'Income Proof',
-  'Other Supporting Documents',
-]
+const createRows = (count) => Array.from({ length: count }, (_, index) => ({ id: index + 1 }))
+const createFacilityRows = () => []
 
-function BankingHeader() {
+export function BankingHeader({
+  pageTitle,
+  searchValue,
+  searchMessage,
+  onSearchChange,
+  onSearch,
+}) {
   const date = new Intl.DateTimeFormat('en-GB', {
     day: '2-digit',
     month: 'short',
@@ -224,9 +197,24 @@ function BankingHeader() {
         <div className="bank-meta user-meta"><span>User</span><strong><span className="user-icon" aria-hidden="true">●</span> Current User</strong></div>
       </div>
       <div className="bank-titleline">
-        <strong className="product-name">Nexora</strong>
-        <strong className="screen-title">Individual Customer Master</strong>
-        <span className="title-spacer" aria-hidden="true" />
+        <strong className="product-name">NexCore</strong>
+        <strong className="screen-title">{pageTitle}</strong>
+        <form className="header-search" onSubmit={(event) => {
+          event.preventDefault()
+          onSearch()
+        }}>
+          <div className="header-search-controls">
+            <input
+              type="search"
+              aria-label="Search pages"
+              placeholder="Search pages"
+              value={searchValue}
+              onChange={(event) => onSearchChange(event.target.value)}
+            />
+            <button type="submit">Go</button>
+          </div>
+          {searchMessage && <span className="header-search-message" role="status">{searchMessage}</span>}
+        </form>
       </div>
     </header>
   )
@@ -264,20 +252,20 @@ function FormField({ field, value, error, onChange, onBlur, onAction, idPrefix =
               onChange={(event) => onChange(part, event.target.value)}
               onBlur={() => onBlur(field.name)}
             >
-              <option value="">Title</option>
+              <option value=""> </option>
               {['Mr.', 'Mrs.', 'Miss.', 'Ms.', 'Dr.'].map((title) => <option key={title} value={title}>{title}</option>)}
             </select>
           ) : (
             <input
               key={part}
-              id={part}
+              id={`${idPrefix}${part}`}
               name={part}
               value={value?.[part] ?? ''}
               maxLength={field.partMaxLength}
-              placeholder={['First', 'Middle', 'Last'][index - (field.titleOptions ? 1 : 0)] || 'Name'}
+              placeholder=""
               aria-label={`${field.label} ${['first', 'middle', 'last'][index - (field.titleOptions ? 1 : 0)] || index + 1}`}
               aria-invalid={Boolean(error)}
-              aria-describedby={error ? `${field.name}-error` : undefined}
+              aria-describedby={error ? `${idPrefix}${field.name}-error` : undefined}
               onChange={(event) => onChange(part, event.target.value)}
               onBlur={() => onBlur(field.name)}
             />
@@ -293,7 +281,7 @@ function FormField({ field, value, error, onChange, onBlur, onAction, idPrefix =
       </select>
     )
   } else if (field.type === 'readonly') {
-    control = <input {...common} readOnly placeholder="—" />
+    control = <input {...common} readOnly placeholder="" />
   } else {
     control = (
       <input
@@ -302,7 +290,7 @@ function FormField({ field, value, error, onChange, onBlur, onAction, idPrefix =
         inputMode={field.type === 'digits' ? 'numeric' : field.inputMode}
         min={field.min}
         step={field.step}
-        placeholder={field.type === 'date' ? '' : 'Enter'}
+        placeholder=""
         onChange={field.type === 'digits' ? (event) => onChange(field.name, event.target.value.replace(/\D/g, '')) : common.onChange}
         onKeyDown={field.type === 'number' || field.type === 'digits' ? (event) => {
           if (['e', 'E', '+', '-'].includes(event.key)) event.preventDefault()
@@ -311,7 +299,7 @@ function FormField({ field, value, error, onChange, onBlur, onAction, idPrefix =
     )
   }
   return (
-    <div className={`field ${field.wide ? 'field-wide' : ''} ${field.parts ? 'field-multipart' : ''} ${compact ? 'compact-field' : ''}`}>
+    <div className={`field ${field.wide ? 'field-wide' : ''} ${field.parts ? 'field-multipart' : ''} ${field.name === 'kycName' ? 'field-kyc-name' : ''} ${compact ? 'compact-field' : ''}`}>
       <label htmlFor={`${idPrefix}${field.parts?.[0] || field.name}`}>{field.label}{field.required && <span className="required-mark"> *</span>}</label>
       {field.action ? (
         <div className="input-action-group">
@@ -326,12 +314,12 @@ function FormField({ field, value, error, onChange, onBlur, onAction, idPrefix =
   )
 }
 
-function DocumentUpload({ files, errors, onChoose, onRemove }) {
+function DocumentUpload({ rows, files, errors, onFieldChange, onChoose, onRemove, onAdd }) {
   const previews = useMemo(() => {
     const urls = {}
-    Object.entries(files).forEach(([name, file]) => {
-      if (file.type.startsWith('image/')) urls[name] = URL.createObjectURL(file)
-      else if (file.type === 'application/pdf') urls[name] = URL.createObjectURL(file)
+    Object.entries(files).forEach(([id, file]) => {
+      if (file.type.startsWith('image/')) urls[id] = URL.createObjectURL(file)
+      else if (file.type === 'application/pdf') urls[id] = URL.createObjectURL(file)
     })
     return urls
   }, [files])
@@ -340,53 +328,113 @@ function DocumentUpload({ files, errors, onChoose, onRemove }) {
 
   return (
     <div className="documents-panel">
-      <div className="section-heading">Customer Documents</div>
+      <div className="document-toolbar">
+        <span />
+        <button className="small-action-button add-button" type="button" onClick={onAdd}>Add Row</button>
+      </div>
       <p className="form-note">Accepted formats: PDF, JPG, JPEG, PNG. Maximum file size: 5 MB per file.</p>
-      <div className="document-list">
-        {documentTypes.map((name) => {
-          const file = files[name]
-          const id = `document-${name.replace(/\W+/g, '-').toLowerCase()}`
-          return (
-            <div className="document-row" key={name}>
-              <label className="document-label" htmlFor={id}>{name}</label>
-              <div className="document-picker">
-                <input
-                  id={id}
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
-                  onChange={(event) => {
-                    onChoose(name, event.target.files?.[0])
-                    event.target.value = ''
-                  }}
-                  aria-describedby={errors[name] ? `${id}-error` : undefined}
-                />
-                {file && <span className="selected-file" title={file.name}>{file.name}</span>}
-              </div>
-              <div className="document-actions">
-                {file && <button className="text-button" type="button" onClick={() => window.open(previews[name], '_blank', 'noopener,noreferrer')}>Preview</button>}
-                {file && <button className="text-button remove-button" type="button" onClick={() => onRemove(name)}>Remove</button>}
-              </div>
-              {errors[name] && <span className="field-error document-error" id={`${id}-error`} role="alert">{errors[name]}</span>}
-              {file?.type === 'image/png' || file?.type === 'image/jpeg' ? (
-                <img className="document-thumbnail" src={previews[name]} alt={`${name} preview`} />
-              ) : null}
-            </div>
-          )
-        })}
+      <div className="table-scroll">
+        <table className="document-table">
+          <thead>
+            <tr>
+              <th>Sr</th>
+              <th>Document Name</th>
+              <th>Document Number</th>
+              <th>Date of issue</th>
+              <th>Place of Issue</th>
+              <th>Date of Expiry</th>
+              <th>Remarks</th>
+              <th>Upload</th>
+              <th>View</th>
+              <th>Remove Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, index) => {
+              const file = files[row.id]
+              const errorId = `document-${row.id}-error`
+              return (
+                <tr key={row.id}>
+                  <td>{index + 1}</td>
+                  {[
+                    ['documentName', 'Document Name', 'text'],
+                    ['documentNumber', 'Document Number', 'text'],
+                    ['issueDate', 'Date of issue', 'date'],
+                    ['placeOfIssue', 'Place of Issue', 'text'],
+                    ['expiryDate', 'Date of Expiry', 'date'],
+                    ['remarks', 'Remarks', 'text'],
+                  ].map(([name, label, type]) => (
+                    <td key={name}>
+                      <input
+                        className="table-input"
+                        type={type}
+                        aria-label={`${label}, row ${index + 1}`}
+                        value={row[name] ?? ''}
+                        onChange={(event) => onFieldChange(row.id, name, event.target.value)}
+                      />
+                    </td>
+                  ))}
+                  <td>
+                    <label className="upload-button" htmlFor={`document-upload-${row.id}`}>Upload</label>
+                    <input
+                      className="visually-hidden"
+                      id={`document-upload-${row.id}`}
+                      type="file"
+                      accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+                      onChange={(event) => {
+                        onChoose(row.id, event.target.files?.[0])
+                        event.target.value = ''
+                      }}
+                      aria-describedby={errors[row.id] ? errorId : undefined}
+                    />
+                    {errors[row.id] && <span className="field-error document-error" id={errorId} role="alert">{errors[row.id]}</span>}
+                    {file && <span className="selected-file" title={file.name}>{file.name}</span>}
+                  </td>
+                  <td>
+                    <button
+                      className="row-action"
+                      type="button"
+                      disabled={!file}
+                      onClick={() => window.open(previews[row.id], '_blank', 'noopener,noreferrer')}
+                    >
+                      View
+                    </button>
+                  </td>
+                  <td>
+                    {file && <button className="text-button remove-button" type="button" onClick={() => {
+                      if (window.confirm('Are you sure you want to remove this document?')) onRemove(row.id)
+                    }}>Remove</button>}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   )
 }
 
-export default function IndividualCustomerMaster() {
+export default function IndividualCustomerMaster({
+  searchValue,
+  searchMessage,
+  onSearchChange,
+  onSearch,
+}) {
   const [activeTab, setActiveTab] = useState(0)
   const [addressSubtab, setAddressSubtab] = useState('address')
   const [values, setValues] = useState({})
   const [errors, setErrors] = useState({})
-  const [facilities, setFacilities] = useState([])
+  const [facilities, setFacilities] = useState(createFacilityRows)
   const [addressRows, setAddressRows] = useState([{ id: 1 }])
+  const [assetRows, setAssetRows] = useState(createRows(2))
+  const [loanRows, setLoanRows] = useState(createRows(2))
+  const [documentRows, setDocumentRows] = useState([])
   const [nextFacilityId, setNextFacilityId] = useState(1)
   const [nextAddressId, setNextAddressId] = useState(2)
+  const [nextDocumentId, setNextDocumentId] = useState(1)
+  const [editingAssetId, setEditingAssetId] = useState(null)
+  const [editingLoanId, setEditingLoanId] = useState(null)
   const [editingFacility, setEditingFacility] = useState(null)
   const [viewFacility, setViewFacility] = useState(null)
   const [files, setFiles] = useState({})
@@ -397,7 +445,7 @@ export default function IndividualCustomerMaster() {
     const formattedValue = name === 'pan' ? value.toUpperCase() : value
     const nextValues = { ...values, [name]: formattedValue }
     setValues(nextValues)
-    const updatedErrors = validatePage(activeTab, nextValues, facilities, addressRows)
+    const updatedErrors = validatePage(activeTab, nextValues, facilities, addressRows, assetRows, loanRows)
     const pageFields = new Set(fieldGroups[activeTab]?.flatMap((group) =>
       group.fields.flatMap((field) => [field.name, ...(field.parts || [])]),
     ) || [])
@@ -414,7 +462,7 @@ export default function IndividualCustomerMaster() {
   }
 
   const validateField = (name) => {
-    const fieldErrors = validatePage(activeTab, values, facilities, addressRows)
+    const fieldErrors = validatePage(activeTab, values, facilities, addressRows, assetRows, loanRows)
     setErrors((current) => {
       const next = { ...current }
       if (fieldErrors[name]) next[name] = fieldErrors[name]
@@ -424,7 +472,7 @@ export default function IndividualCustomerMaster() {
   }
 
   const validateIdentityFormat = (name) => {
-    const fieldErrors = validatePage(0, values, facilities)
+    const fieldErrors = validatePage(0, values, facilities, addressRows, assetRows, loanRows)
     if (fieldErrors[name]) {
       setErrors((current) => ({ ...current, [name]: fieldErrors[name] }))
       setNotice(fieldErrors[name])
@@ -440,10 +488,10 @@ export default function IndividualCustomerMaster() {
   }
 
   const checkTab = (tabIndex) => {
-    const nextErrors = validatePage(tabIndex, values, facilities, addressRows)
+    const nextErrors = validatePage(tabIndex, values, facilities, addressRows, assetRows, loanRows)
     if (tabIndex === 7) {
-      Object.entries(documentErrors).forEach(([name, message]) => {
-        nextErrors[`document-${name}`] = message
+      Object.entries(documentErrors).forEach(([id, message]) => {
+        nextErrors[`document-${id}`] = message
       })
     }
     const pageFields = new Set(tabIndex === 2
@@ -451,8 +499,20 @@ export default function IndividualCustomerMaster() {
       : tabIndex === 3
         ? [
             ...addressRows.flatMap((address) => Object.keys(address).filter((key) => key !== 'id').map((key) => `address-${address.id}-${key}`)),
-            'addressMobile', 'addressEmail',
+            ...phoneFields.map((field) => field.name),
+            ...contextFields.flatMap((field) => [field.name, ...(field.parts || [])]),
           ]
+        : tabIndex === 5
+          ? [
+              ...assetRows.flatMap((asset) => [`asset-${asset.id}-valueAsOfDate`]),
+              ...loanRows.flatMap((loan) => [`loan-${loan.id}-loanAmount`, `loan-${loan.id}-emi`]),
+              ...fieldGroups[tabIndex].flatMap((group) => group.fields.flatMap((field) => [field.name, ...(field.parts || [])])),
+            ]
+          : tabIndex === 7
+            ? [
+                ...contextFields.flatMap((field) => [field.name, ...(field.parts || [])]),
+                ...Object.keys(documentErrors).map((id) => `document-${id}`),
+              ]
         : fieldGroups[tabIndex]?.flatMap((group) => group.fields.flatMap((field) => [field.name, ...(field.parts || [])])) || [])
     setErrors((current) => {
       const updated = { ...current }
@@ -471,14 +531,14 @@ export default function IndividualCustomerMaster() {
 
   const validateAll = () => {
     const combinedErrors = {}
-    tabs.forEach((_, index) => Object.assign(combinedErrors, validatePage(index, values, facilities, addressRows)))
-    Object.entries(documentErrors).forEach(([name, message]) => {
-      combinedErrors[`document-${name}`] = message
+    tabs.forEach((_, index) => Object.assign(combinedErrors, validatePage(index, values, facilities, addressRows, assetRows, loanRows)))
+    Object.entries(documentErrors).forEach(([id, message]) => {
+      combinedErrors[`document-${id}`] = message
     })
     setErrors(combinedErrors)
     if (Object.keys(combinedErrors).length) {
       const firstInvalidTab = tabs.findIndex((_, index) =>
-        Object.keys(validatePage(index, values, facilities, addressRows)).length > 0 ||
+        Object.keys(validatePage(index, values, facilities, addressRows, assetRows, loanRows)).length > 0 ||
         (index === 7 && Object.keys(documentErrors).length > 0),
       )
       if (firstInvalidTab === 3) {
@@ -493,19 +553,35 @@ export default function IndividualCustomerMaster() {
   }
 
   const clearForm = () => {
+    const defaultFacilities = createFacilityRows()
+    const facilitiesChanged = facilities.length !== defaultFacilities.length ||
+      facilities.some((facility, index) =>
+        ['name', 'amount', 'remarks'].some((key) => facility[key] !== defaultFacilities[index]?.[key]),
+      )
     const hasEnteredData = Object.values(values).some(Boolean) ||
       Object.keys(files).length > 0 ||
-      facilities.length > 0 ||
+      facilitiesChanged ||
       addressRows.length > 1 ||
-      addressRows.some((address) => Object.entries(address).some(([key, value]) => key !== 'id' && Boolean(value)))
+      addressRows.some((address) => Object.entries(address).some(([key, value]) => key !== 'id' && Boolean(value))) ||
+      [assetRows, loanRows, documentRows].some((rows) =>
+        rows.some((row) => Object.entries(row).some(([key, value]) => key !== 'id' && Boolean(value))),
+      )
     if (hasEnteredData && !window.confirm('Cancel this form and clear all entered information? This cannot be undone.')) return
     setActiveTab(0)
     setValues({})
     setErrors({})
-    setFacilities([])
+    setFacilities(createFacilityRows())
     setAddressRows([{ id: 1 }])
+    setAssetRows(createRows(2))
+    setLoanRows(createRows(2))
+    setDocumentRows([])
     setNextFacilityId(1)
     setNextAddressId(2)
+    setNextDocumentId(1)
+    setEditingAssetId(null)
+    setEditingLoanId(null)
+    setEditingFacility(null)
+    setViewFacility(null)
     setAddressSubtab('address')
     setFiles({})
     setDocumentErrors({})
@@ -568,7 +644,7 @@ export default function IndividualCustomerMaster() {
       address.id === id ? { ...address, [name]: value } : address,
     )
     setAddressRows(updatedRows)
-    const addressErrors = validatePage(3, values, facilities, updatedRows)
+    const addressErrors = validatePage(3, values, facilities, updatedRows, assetRows, loanRows)
     setErrors((current) => {
       const next = { ...current }
       Object.keys(next).filter((key) => key.startsWith(`address-${id}-`)).forEach((key) => delete next[key])
@@ -580,7 +656,7 @@ export default function IndividualCustomerMaster() {
   }
 
   const validateAddressField = (id) => {
-    const addressErrors = validatePage(3, values, facilities, addressRows)
+    const addressErrors = validatePage(3, values, facilities, addressRows, assetRows, loanRows)
     setErrors((current) => {
       const next = { ...current }
       Object.keys(next).filter((key) => key.startsWith(`address-${id}-`)).forEach((key) => delete next[key])
@@ -591,100 +667,268 @@ export default function IndividualCustomerMaster() {
     })
   }
 
-  const removeDocument = (name) => {
+  const updateDocumentField = (id, name, value) => {
+    setDocumentRows((current) => current.map((row) => row.id === id ? { ...row, [name]: value } : row))
+  }
+
+  const addDocumentRow = () => {
+    setDocumentRows((current) => [...current, { id: nextDocumentId }])
+    setNextDocumentId((current) => current + 1)
+  }
+
+  const removeDocument = (id) => {
+    setDocumentRows((current) => current.filter((row) => row.id !== id))
     setFiles((current) => {
       const next = { ...current }
-      delete next[name]
+      delete next[id]
       return next
     })
     setDocumentErrors((current) => {
       const next = { ...current }
-      delete next[name]
+      delete next[id]
       return next
     })
   }
 
-  const chooseFile = (name, file) => {
+  const chooseFile = (id, file) => {
     if (!file) return
     const extension = file.name.split('.').pop()?.toLowerCase()
     const allowed = ['pdf', 'jpg', 'jpeg', 'png']
     if (!allowed.includes(extension) || (file.type && !['application/pdf', 'image/jpeg', 'image/png'].includes(file.type))) {
-      setDocumentErrors((current) => ({ ...current, [name]: 'Choose a PDF, JPG, JPEG, or PNG file.' }))
+      setDocumentErrors((current) => ({ ...current, [id]: 'Choose a PDF, JPG, JPEG, or PNG file.' }))
       return
     }
     if (file.size > 5 * 1024 * 1024) {
-      setDocumentErrors((current) => ({ ...current, [name]: 'File must be 5 MB or smaller.' }))
+      setDocumentErrors((current) => ({ ...current, [id]: 'File must be 5 MB or smaller.' }))
       return
     }
-    setFiles((current) => ({ ...current, [name]: file }))
+    setFiles((current) => ({ ...current, [id]: file }))
     setDocumentErrors((current) => {
       const next = { ...current }
-      delete next[name]
+      delete next[id]
       return next
     })
   }
 
-  const renderGroupField = (field, compact = false) => (
+  const updateNetworthRow = (setter, prefix, id, name, value) => {
+    setter((current) => current.map((row) => row.id === id ? { ...row, [name]: value } : row))
+    setErrors((current) => {
+      const next = { ...current }
+      delete next[`${prefix}-${id}-${name}`]
+      return next
+    })
+  }
+
+  const clearCurrentPage = () => {
+    if (activeTab === 3 && addressSubtab === 'address') {
+      setAddressRows([{ id: 1 }])
+      setNextAddressId(2)
+    } else if (activeTab === 5) {
+      setAssetRows(createRows(2))
+      setLoanRows(createRows(2))
+      setEditingAssetId(null)
+      setEditingLoanId(null)
+      const keys = new Set(networthFields.map((field) => field.name))
+      setValues((current) => Object.fromEntries(Object.entries(current).filter(([key]) => !keys.has(key))))
+    } else {
+      const fieldsToClear = activeTab === 3
+        ? phoneFields
+        : fieldGroups[activeTab]?.flatMap((group) => group.fields) || []
+      const keys = new Set(fieldsToClear.flatMap((field) => [field.name, ...(field.parts || [])]))
+      setValues((current) => Object.fromEntries(Object.entries(current).filter(([key]) => !keys.has(key))))
+    }
+    setErrors({})
+    setNotice('')
+  }
+
+  const submitCurrentPage = () => {
+    if (checkTab(activeTab)) setNotice(`${tabs[activeTab]} details are valid.`)
+    else setNotice('Please correct the highlighted fields.')
+  }
+
+  const renderGroupField = (field, compact = false, value = undefined, onChange = setField, onBlur = validateField, idPrefix = '') => (
     <FormField
       key={field.name}
       field={field}
-      value={field.name === 'age' ? calculateAge(values.dateOfBirth) : field.parts ? values : values[field.name]}
+      value={value !== undefined
+        ? value
+        : field.name === 'age'
+          ? calculateAge(values.dateOfBirth)
+          : field.parts
+            ? values
+            : values[field.name]}
       error={errors[field.name]}
-      onChange={setField}
-      onBlur={validateField}
+      onChange={onChange}
+      onBlur={onBlur}
       onAction={validateIdentityFormat}
       compact={compact}
       reserveError={compact}
+      idPrefix={idPrefix}
     />
   )
 
-  const renderGroup = (group) => (
-    <section className={`form-section ${group.layout === 'personal' ? 'personal-section' : ''}`} key={group.title}>
-      <div className="section-heading">{group.title}</div>
-      {group.layout === 'personal' ? (
-        <div className="personal-grid">
-          {group.rows.map((row, index) => {
-            const fieldsByName = new Map(group.fields.map((field) => [field.name, field]))
-            const renderSlot = (name) => {
-              const field = fieldsByName.get(name)
-              return field ? renderGroupField(field, true) : null
-            }
-            return (
-              <div className="personal-row" key={`personal-row-${index + 1}`}>
-                <div className="personal-slot">{renderSlot(row.left)}</div>
-                <div className="personal-slot">{renderSlot(row.middle)}</div>
-                <div className="personal-slot">{renderSlot(row.right)}</div>
-                <div className="personal-actions">
-                  {row.actions && (
-                    <>
-                      <button className="action-button" type="button" onClick={() => setNotice('Duplicate check requires a connected customer service. No lookup was performed.')}>Duplicate Check</button>
-                      <button className="action-button" type="button" onClick={() => setNotice('Blacklist check requires a connected screening service. No lookup was performed.')}>Blacklist Check</button>
-                    </>
-                  )}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      ) : (
-        <div className="field-grid">
-          {group.fields.map((field) => renderGroupField(field))}
-        </div>
-      )}
-    </section>
+  const renderCustomerContext = () => (
+    <div className="customer-context">
+      {contextFields.map((field) => renderGroupField(field))}
+    </div>
   )
 
-  const renderFields = (index) => index === 1
-    ? <div className="kyc-columns">{fieldGroups[index].map(renderGroup)}</div>
-    : fieldGroups[index].map(renderGroup)
+  const renderBasicFields = () => {
+    const fieldsByName = new Map(basicFields.map((field) => [field.name, field]))
+    return (
+      <>
+        <div className="basic-grid">
+          {basicRows.map((row, rowIndex) => (
+            <div className="basic-row" key={`basic-row-${rowIndex + 1}`}>
+              {row.map((name, columnIndex) => {
+                if (!name) return <span className="basic-slot" key={`empty-${columnIndex}`} />
+                if (name === 'basicActions') {
+                  return (
+                    <div className="basic-check-actions" key={name}>
+                      <button className="small-action-button" type="button" onClick={() => setNotice('Duplicate check requires a connected customer service. No lookup was performed.')}>Duplicate Check</button>
+                      <button className="small-action-button" type="button" onClick={() => setNotice('Blacklist check requires a connected screening service. No lookup was performed.')}>Blacklist Check</button>
+                    </div>
+                  )
+                }
+                return renderGroupField(fieldsByName.get(name))
+              })}
+            </div>
+          ))}
+        </div>
+      </>
+    )
+  }
 
-  const addressFields = fieldGroups[3][0].fields.filter(
-    (field) => !['addressMobile', 'addressEmail'].includes(field.name),
-  )
+  const renderFields = (index) => {
+    if (index === 0) return renderBasicFields()
+
+    const renderPageFields = (fields, className = 'field-grid') => (
+      <div className={className}>{fields.map((field) => renderGroupField(field))}</div>
+    )
+
+    if (index === 1) {
+      return (
+        <>
+          {renderCustomerContext()}
+          <div className="kyc-columns">
+            {renderPageFields(kycFields.slice(0, 4))}
+            {renderPageFields(kycFields.slice(4))}
+          </div>
+        </>
+      )
+    }
+
+    if (index === 4) {
+      return (
+        <>
+          {renderCustomerContext()}
+          {renderPageFields(employmentFields, 'field-grid employment-grid')}
+        </>
+      )
+    }
+
+    if (index === 5) {
+      const topFields = networthFields.slice(0, 5)
+      const totalFields = networthFields.slice(5)
+      const assetColumns = [
+        ['description', 'Asset Description'],
+        ['valueAsOfDate', 'Value as on Date'],
+      ]
+      const loanColumns = [
+        ['bankName', 'Bank Name'],
+        ['loanType', 'Loan Type'],
+        ['loanAmount', 'Loan Amount'],
+        ['emi', 'EMI'],
+      ]
+      return (
+        <>
+          {renderCustomerContext()}
+          <div className="networth-content">
+            {renderPageFields(topFields, 'field-grid networth-entry-grid')}
+            <div className="table-scroll">
+              <table className="networth-table asset-table">
+                <thead><tr><th>Sr</th><th>Asset Description</th><th>Value as on Date</th><th>Edit</th><th>Delete</th></tr></thead>
+                <tbody>
+                  {assetRows.map((row, indexInTable) => (
+                    <tr key={row.id}>
+                      <td>{indexInTable + 1}</td>
+                      {assetColumns.map(([name, label]) => (
+                        <td key={name}>
+                          <input
+                            className="table-input"
+                            aria-label={`${label}, asset ${indexInTable + 1}`}
+                            type={name === 'valueAsOfDate' ? 'date' : 'text'}
+                            value={row[name] ?? ''}
+                            disabled={editingAssetId !== row.id}
+                            aria-invalid={Boolean(errors[`asset-${row.id}-valueAsOfDate`])}
+                            onChange={(event) => updateNetworthRow(setAssetRows, 'asset', row.id, name, event.target.value)}
+                          />
+                          {errors[`asset-${row.id}-valueAsOfDate`] && <span className="field-error table-error" role="alert">{errors[`asset-${row.id}-valueAsOfDate`]}</span>}
+                        </td>
+                      ))}
+                      <td><button className="row-action" type="button" onClick={() => setEditingAssetId(editingAssetId === row.id ? null : row.id)}>{editingAssetId === row.id ? 'Save' : 'Edit'}</button></td>
+                      <td><button className="row-action delete-action" type="button" onClick={() => setAssetRows((current) => current.filter((asset) => asset.id !== row.id))}>Delete</button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="table-scroll">
+              <table className="networth-table loan-table">
+                <thead><tr><th>Sr</th><th>Bank Name</th><th>Loan Type</th><th>Loan Amount</th><th>EMI</th><th>Edit</th><th>Delete</th></tr></thead>
+                <tbody>
+                  {loanRows.map((row, indexInTable) => (
+                    <tr key={row.id}>
+                      <td>{indexInTable + 1}</td>
+                      {loanColumns.map(([name, label]) => (
+                        <td key={name}>
+                          <input
+                            className="table-input"
+                            aria-label={`${label}, loan ${indexInTable + 1}`}
+                            type={['loanAmount', 'emi'].includes(name) ? 'number' : 'text'}
+                            min={['loanAmount', 'emi'].includes(name) ? '0' : undefined}
+                            value={row[name] ?? ''}
+                            disabled={editingLoanId !== row.id}
+                            aria-invalid={Boolean(errors[`loan-${row.id}-${name}`])}
+                            onChange={(event) => updateNetworthRow(setLoanRows, 'loan', row.id, name, event.target.value)}
+                          />
+                          {errors[`loan-${row.id}-${name}`] && <span className="field-error table-error" role="alert">{errors[`loan-${row.id}-${name}`]}</span>}
+                        </td>
+                      ))}
+                      <td><button className="row-action" type="button" onClick={() => setEditingLoanId(editingLoanId === row.id ? null : row.id)}>{editingLoanId === row.id ? 'Save' : 'Edit'}</button></td>
+                      <td><button className="row-action delete-action" type="button" onClick={() => setLoanRows((current) => current.filter((loan) => loan.id !== row.id))}>Delete</button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {renderPageFields(totalFields, 'field-grid networth-total-grid')}
+          </div>
+        </>
+      )
+    }
+
+    if (index === 6) {
+      return (
+        <>
+          {renderCustomerContext()}
+          {renderPageFields(fatcaFields, 'field-grid fatca-grid')}
+        </>
+      )
+    }
+
+    return null
+  }
 
   return (
-    <main className="cif-app">
-      <BankingHeader />
+    <main className={`cif-app ${activeTab === 7 ? 'document-upload-page' : ''}`}>
+      <BankingHeader
+        pageTitle="Individual Customer Master"
+        searchValue={searchValue}
+        searchMessage={searchMessage}
+        onSearchChange={onSearchChange}
+        onSearch={onSearch}
+      />
       <nav className="tab-bar" aria-label="Individual customer sections">
         {tabs.map((tab, index) => (
           <button
@@ -700,50 +944,47 @@ export default function IndividualCustomerMaster() {
       </nav>
 
       <section className="work-area">
-        <div className="page-caption">
-          <span>{tabs[activeTab]}</span>
-          <span className="page-count">Page {activeTab + 1} of {tabs.length}</span>
-        </div>
         {notice && <div className="form-notice" role="status">{notice}</div>}
 
-        <div className="form-content">
+        <div className={`form-content form-content-page-${activeTab}`}>
           {activeTab === 2 ? (
-            <section className="facility-section">
-              <div className="section-heading">Facilities</div>
-              <div className="list-toolbar">
-                <span />
-                <button className="small-action-button add-button" type="button" onClick={addFacility}>+ Add</button>
-              </div>
-              <div className="table-scroll">
-                <table className="facility-table">
-                  <thead><tr><th>Sr. No.</th><th>Particulars</th><th>Upto Amount (Rs.)</th><th>Remarks</th><th>View</th><th>Edit</th><th>Remove</th></tr></thead>
-                  <tbody>
-                    {facilities.map((facility, index) => (
-                      <tr key={facility.id}>
-                        <td>{index + 1}</td>
-                        <td>
-                          {editingFacility?.id === facility.id ? (
-                            <input
-                              className="table-input"
-                              aria-label={`${facility.name || 'New facility'} particulars`}
-                              value={editingFacility.name}
-                              aria-invalid={errors[`facility-${facility.id}`] === 'Particulars are required.'}
-                              onChange={(event) => {
-                                const updated = { ...editingFacility, name: event.target.value }
-                                setEditingFacility(updated)
-                                setErrors((current) => {
-                                  const next = { ...current }
-                                  delete next[`facility-${facility.id}`]
-                                  return next
-                                })
-                              }}
-                            />
-                          ) : facility.name}
-                          {errors[`facility-${facility.id}`] === 'Particulars are required.' && <span className="field-error table-error">{errors[`facility-${facility.id}`]}</span>}
-                        </td>
-                        <td>
-                          {editingFacility?.id === facility.id ? (
-                            <input className="table-input amount-input" aria-label={`${facility.name || 'New facility'} upto amount`} type="number" min="0" step="0.01" value={editingFacility.amount} onChange={(event) => {
+            <>
+              {renderCustomerContext()}
+              <section className="facility-section">
+                <div className="list-toolbar">
+                  <span />
+                  <button className="small-action-button add-button" type="button" onClick={addFacility}>+ Add</button>
+                </div>
+                <div className="table-scroll">
+                  <table className="facility-table">
+                    <thead><tr><th>Sr</th><th>Particulars</th><th>Upto Amount (Rs.)</th><th>Remarks</th><th>View</th><th>Edit</th><th>Delete</th></tr></thead>
+                    <tbody>
+                      {facilities.map((facility, index) => (
+                        <tr key={facility.id}>
+                          <td>{index + 1}</td>
+                          <td>
+                            {editingFacility?.id === facility.id ? (
+                              <input
+                                className="table-input"
+                                aria-label={`${facility.name || 'New facility'} particulars`}
+                                value={editingFacility.name}
+                                aria-invalid={errors[`facility-${facility.id}`] === 'Particulars are required.'}
+                                onChange={(event) => {
+                                  const updated = { ...editingFacility, name: event.target.value }
+                                  setEditingFacility(updated)
+                                  setErrors((current) => {
+                                    const next = { ...current }
+                                    delete next[`facility-${facility.id}`]
+                                    return next
+                                  })
+                                }}
+                              />
+                            ) : facility.name}
+                            {errors[`facility-${facility.id}`] === 'Particulars are required.' && <span className="field-error table-error">{errors[`facility-${facility.id}`]}</span>}
+                          </td>
+                          <td>
+                            {editingFacility?.id === facility.id ? (
+                              <input className="table-input amount-input" aria-label={`${facility.name || 'New facility'} upto amount`} type="number" min="0" step="0.01" value={editingFacility.amount} onChange={(event) => {
                                 const updated = { ...editingFacility, amount: event.target.value }
                                 setEditingFacility(updated)
                                 setErrors((current) => {
@@ -752,41 +993,41 @@ export default function IndividualCustomerMaster() {
                                   return next
                                 })
                               }} aria-invalid={errors[`facility-${facility.id}`] === 'Amount must be a non-negative number.'} />
-                          ) : facility.amount || '—'}
-                          {errors[`facility-${facility.id}`] === 'Amount must be a non-negative number.' && <span className="field-error table-error">{errors[`facility-${facility.id}`]}</span>}
-                        </td>
-                        <td>{editingFacility?.id === facility.id ? <input className="table-input" aria-label={`${facility.name || 'New facility'} remarks`} value={editingFacility.remarks} onChange={(event) => setEditingFacility({ ...editingFacility, remarks: event.target.value })} /> : facility.remarks || '—'}</td>
-                        <td><button className="row-action" type="button" onClick={() => setViewFacility(facility)}>View</button></td>
-                        <td>{editingFacility?.id === facility.id ? <button className="row-action" type="button" onClick={saveFacility}>Save</button> : <button className="row-action" type="button" onClick={() => setEditingFacility({ ...facility })}>Edit</button>}</td>
-                        <td><button className="row-action delete-action" type="button" onClick={() => {
-                          if (window.confirm(`Remove the ${facility.name || 'new'} facility row?`)) removeFacility(facility.id)
-                        }}>Remove</button></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </section>
+                            ) : facility.amount || '—'}
+                            {errors[`facility-${facility.id}`] === 'Amount must be a non-negative number.' && <span className="field-error table-error">{errors[`facility-${facility.id}`]}</span>}
+                          </td>
+                          <td>{editingFacility?.id === facility.id ? <input className="table-input" aria-label={`${facility.name || 'New facility'} remarks`} value={editingFacility.remarks} onChange={(event) => setEditingFacility({ ...editingFacility, remarks: event.target.value })} /> : facility.remarks || '—'}</td>
+                          <td><button className="row-action" type="button" onClick={() => setViewFacility(facility)}>View</button></td>
+                          <td>{editingFacility?.id === facility.id ? <button className="row-action" type="button" onClick={saveFacility}>Save</button> : <button className="row-action" type="button" onClick={() => setEditingFacility({ ...facility })}>Edit</button>}</td>
+                          <td><button className="row-action delete-action" type="button" onClick={() => {
+                            if (window.confirm(`Remove the ${facility.name || 'new'} facility row?`)) removeFacility(facility.id)
+                          }}>Delete</button></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </>
           ) : activeTab === 3 ? (
-            <section className="address-section">
-              <div className="address-subtabs" role="tablist" aria-label="Address sections">
-                <button type="button" role="tab" aria-selected={addressSubtab === 'address'} className={`address-subtab ${addressSubtab === 'address' ? 'active' : ''}`} onClick={() => setAddressSubtab('address')}>Address Details</button>
-                <button type="button" role="tab" aria-selected={addressSubtab === 'phone'} className={`address-subtab ${addressSubtab === 'phone' ? 'active' : ''}`} onClick={() => setAddressSubtab('phone')}>Phone/Mail Details</button>
-              </div>
-              {addressSubtab === 'address' ? (
-                <div className="address-details-panel" role="tabpanel">
-                  <div className="list-toolbar">
-                    <span>Address entries</span>
-                    <button className="small-action-button add-button" type="button" onClick={addAddress}>+ Add</button>
-                  </div>
-                  <div className="address-entry-list">
+            <>
+              {renderCustomerContext()}
+              <section className="address-section">
+                <div className="address-subtabs" role="tablist" aria-label="Address sections">
+                  <button type="button" role="tab" aria-selected={addressSubtab === 'address'} className={`address-subtab ${addressSubtab === 'address' ? 'active' : ''}`} onClick={() => setAddressSubtab('address')}>Address</button>
+                  <button type="button" role="tab" aria-selected={addressSubtab === 'phone'} className={`address-subtab ${addressSubtab === 'phone' ? 'active' : ''}`} onClick={() => setAddressSubtab('phone')}>Phone / Email</button>
+                </div>
+                {addressSubtab === 'address' ? (
+                  <div className="address-entry-list" role="tabpanel">
                     {addressRows.map((address, index) => (
                       <section className="address-entry" key={address.id} aria-label={`Address entry ${index + 1}`}>
-                        <div className="address-entry-heading">
-                          <strong>Address {index + 1}</strong>
-                          <button className="small-action-button remove-button" type="button" onClick={() => removeAddress(address.id)}>Remove</button>
-                        </div>
-                        <div className="field-grid">
+                        {index > 0 && (
+                          <div className="address-entry-heading">
+                            <strong>Address {index + 1}</strong>
+                            <button className="small-action-button remove-button" type="button" onClick={() => removeAddress(address.id)}>Remove</button>
+                          </div>
+                        )}
+                        <div className="field-grid address-grid">
                           {addressFields.map((field) => {
                             const errorKey = `address-${address.id}-${field.name}`
                             return (
@@ -805,31 +1046,38 @@ export default function IndividualCustomerMaster() {
                         </div>
                       </section>
                     ))}
+                    <div className="page-local-actions">
+                      <button className="action-button" type="button" onClick={submitCurrentPage}>Submit</button>
+                      <button className="action-button secondary" type="button" onClick={clearCurrentPage}>Clear</button>
+                      <button className="small-action-button add-button" type="button" onClick={addAddress}>+ Add</button>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <section className="phone-mail-panel" role="tabpanel">
-                  <div className="section-heading">Phone/Mail Details</div>
-                  <div className="field-grid phone-mail-grid">
-                    {fieldGroups[3][0].fields
-                      .filter((field) => ['addressMobile', 'addressEmail'].includes(field.name))
-                      .map((field) => (
-                        <FormField
-                          key={field.name}
-                          field={field}
-                          value={values[field.name]}
-                          error={errors[field.name]}
-                          onChange={setField}
-                          onBlur={validateField}
-                          onAction={validateIdentityFormat}
-                        />
-                      ))}
+                ) : (
+                  <div className="phone-mail-panel" role="tabpanel">
+                    <div className="field-grid phone-mail-grid">
+                      {phoneFields.map((field) => renderGroupField(field))}
+                    </div>
+                    <div className="page-local-actions">
+                      <button className="action-button" type="button" onClick={submitCurrentPage}>Submit</button>
+                      <button className="action-button secondary" type="button" onClick={clearCurrentPage}>Clear</button>
+                    </div>
                   </div>
-                </section>
-              )}
-            </section>
+                )}
+              </section>
+            </>
           ) : activeTab === 7 ? (
-            <DocumentUpload files={files} errors={documentErrors} onChoose={chooseFile} onRemove={removeDocument} />
+            <>
+              {renderCustomerContext()}
+              <DocumentUpload
+                rows={documentRows}
+                files={files}
+                errors={documentErrors}
+                onFieldChange={updateDocumentField}
+                onChoose={chooseFile}
+                onRemove={removeDocument}
+                onAdd={addDocumentRow}
+              />
+            </>
           ) : renderFields(activeTab)}
           <div className="section-actions-row">
             <button className="action-button" type="button" onClick={validateCurrentSection}>OK</button>

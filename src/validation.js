@@ -48,14 +48,14 @@ const isValidName = (value) => /^[\p{L}\p{M}][\p{L}\p{M} .'-]*$/u.test(value.tri
 
 const nameFields = [
   'kycFirstName', 'kycMiddleName', 'kycLastName',
-  'aliasFirstName', 'aliasMiddleName', 'aliasLastName',
+  'aliasName',
   'fatherFirstName', 'fatherMiddleName', 'fatherLastName',
   'motherFirstName', 'motherMiddleName', 'motherLastName',
   'spouseFirstName', 'spouseMiddleName', 'spouseLastName',
   'placeOfBirth',
 ]
 
-export function validatePage(pageIndex, values, facilities = [], addresses = []) {
+export function validatePage(pageIndex, values, facilities = [], addresses = [], assets = [], loans = []) {
   const errors = {}
   const required = (key, label) => {
     if (!String(values[key] ?? '').trim()) errors[key] = `${label} is required.`
@@ -86,9 +86,9 @@ export function validatePage(pageIndex, values, facilities = [], addresses = [])
     if (![values.kycFirstName, values.kycMiddleName, values.kycLastName].some((value) => value?.trim())) {
       errors.kycName = 'KYC Name is required.'
     }
-    required('dateOfBirth', 'Date of birth')
+    required('dateOfBirth', 'DOB')
     required('gender', 'Gender')
-    date('dateOfBirth', 'Date of birth', true)
+    date('dateOfBirth', 'DOB', true)
     date('minorTurnedMajorOn', 'Minor turned Major date', true)
     date('form121SubmissionDate', 'Form 121 submission date', true)
     if (
@@ -124,7 +124,8 @@ export function validatePage(pageIndex, values, facilities = [], addresses = [])
           : key.startsWith('alias') ? 'aliasName'
             : key.startsWith('father') ? 'fatherName'
               : key.startsWith('mother') ? 'motherName'
-                : 'spouseName'
+                : key.startsWith('placeOfBirth') ? key
+                  : 'spouseName'
         errors[group] = 'Use letters, spaces, apostrophes, hyphens, or periods only.'
       }
     })
@@ -179,33 +180,46 @@ export function validatePage(pageIndex, values, facilities = [], addresses = [])
   }
 
   if (pageIndex === 3) {
-    validate('addressMobile', isValidMobile, 'Enter a valid 10-digit Indian mobile number.')
-    validate('addressEmail', isValidEmail, 'Enter a valid email address.')
-    validate('pinCode', isValidPin, 'PIN code must contain exactly 6 digits.')
+    validate('registeredMobile', isValidMobile, 'Enter a valid 10-digit Indian mobile number.')
+    validate('alternateMobile', isValidMobile, 'Enter a valid 10-digit Indian mobile number.')
+    validate('personalMailId', isValidEmail, 'Enter a valid email address.')
     addresses.forEach((address) => {
       if (address.pinCode && !isValidPin(address.pinCode)) {
         errors[`address-${address.id}-pinCode`] = 'PIN code must contain exactly 6 digits.'
+      }
+      if (address.addressValidFrom && !isValidDate(address.addressValidFrom)) {
+        errors[`address-${address.id}-addressValidFrom`] = 'Enter a valid address valid from date.'
+      }
+      if (address.addressNoOfYears && !/^\d+$/.test(address.addressNoOfYears)) {
+        errors[`address-${address.id}-addressNoOfYears`] = 'No of yrs must contain digits only.'
       }
     })
   }
 
   if (pageIndex === 4) {
-    validate('joiningDate', isValidDate, 'Enter a valid joining date.')
-    date('joiningDate', 'Joining date', true)
-    validate('officePinCode', isValidPin, 'PIN code must contain exactly 6 digits.')
-    validate('employerContact', isValidMobile, 'Enter a valid 10-digit contact number.')
+    validate('companyMailId', isValidEmail, 'Enter a valid email address.')
+    if (values.workExperience && (!/^\d+(\.\d+)?$/.test(values.workExperience) || Number(values.workExperience) < 0)) {
+      errors.workExperience = 'No of years of service must be a non-negative number.'
+    }
   }
 
   if (pageIndex === 5) {
-    ;['monthlyIncome', 'annualIncome', 'otherIncome'].forEach((key) => {
-      amount(key, key === 'monthlyIncome' ? 'Monthly income' : key === 'annualIncome' ? 'Annual income' : 'Other income')
+    ;['grossIncome', 'netIncome', 'additionalIncome', 'totalIncome', 'networthRs', 'totalOutgoings'].forEach((key) => {
+      amount(key, key === 'networthRs' ? 'Networth' : key.replace(/([A-Z])/g, ' $1'))
     })
-    validate('incomeIfsc', isValidIfsc, 'Enter a valid IFSC code (for example, SBIN0001234).')
-  }
-
-  if (pageIndex === 6) {
-    date('fatcaDeclarationDate', 'FATCA declaration date', true)
-    date('crsDeclarationDate', 'CRS declaration date', true)
+    assets.forEach((asset) => {
+      if (asset.valueAsOfDate && !isValidDate(asset.valueAsOfDate)) {
+        errors[`asset-${asset.id}-valueAsOfDate`] = 'Enter a valid Value as on Date.'
+      }
+    })
+    loans.forEach((loan) => {
+      if (loan.loanAmount && (!/^\d+(\.\d{1,2})?$/.test(loan.loanAmount) || Number(loan.loanAmount) < 0)) {
+        errors[`loan-${loan.id}-loanAmount`] = 'Loan Amount must be a non-negative number.'
+      }
+      if (loan.emi && (!/^\d+(\.\d{1,2})?$/.test(loan.emi) || Number(loan.emi) < 0)) {
+        errors[`loan-${loan.id}-emi`] = 'EMI must be a non-negative number.'
+      }
+    })
   }
 
   return errors
